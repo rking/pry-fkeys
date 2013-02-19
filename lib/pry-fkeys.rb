@@ -56,7 +56,7 @@ Then it should be fully functional; if it isn't, please file an issue:
 Or, if you just want to suppress the warning, you can put '$if Ruby' anywhere in
 ~/.inputrc and it'll stop bothering you.
       EOT
-      'Almost there...'
+      'tl;dr: run inputrc!'
     end
 
     def append!
