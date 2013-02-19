@@ -7,7 +7,8 @@ module PryFkeys
     end
 
     def hotrodded_inputrc?
-      (File.read File.expand_path '~/.inputrc')[/Ruby/]
+      path = File.expand_path '~/.inputrc'
+      File.exists? path and File.read(path)[/\$if\s*Ruby/]
     end
 
     def install_comma_debugging_aliases
@@ -70,48 +71,50 @@ Pry-de found no Ruby customization in ~/.inputrc. Run 'inputrc?' to learn more.
 end
 
 def inputrc?
-  warn <<-EOT
+  Pry.output.puts <<-EOT
+\e[32mThese are the current bindings:\e[0m
+
 $if Ruby
     $if mode=vi
         set keymap vi-command
-        "[14~":   "Ils -l\n"        # <F4> (expects pry >= 0.9.11)
-        "[15~":   "\C-lIwhereami\n" # <F5>
-        "[28~":   "Iedit -c\n"      # <Shift+F5> (urxvt)
-        "[17~":   "Iup\n"           # <F6>
-        "[18~":   "Idown\n"         # <F7>
-        "[19~":   "Icontinue\n"     # <F8>
-        "[32~":   "Itry-again\n"    # <Shift-F8> (urxvt)
-        "[19;2~": "Itry-again\n"    # <Shift-F8> (xterm, gnome-terminal)
-        "[21~":   "Inext\n"         # <F10>
-        "[23~":   "Istep\n"         # <F11>
-        "[23$":   "Ifinish\n"       # Shift+<F11> (urxvt)
-        "[23;2~": "Ifinish\n"       # Shift+<F11> (xterm, gnome-terminal)
-
+        "[14~":   "Ils -l\\n"        # <F4>
+        "[15~":   "\\C-lIwhereami\\n" # <F5>
+        "[28~":   "Iedit -c\\n"      # <Shift+F5>
+        "[17~":   "Iup\\n"           # <F6>
+        "[18~":   "Idown\\n"         # <F7>
+        "[19~":   "Icontinue\\n"     # <F8>
+        "[32~":   "Itry-again\\n"    # <Shift-F8>
+        "[21~":   "Inext\\n"         # <F10>
+        "[23~":   "Istep\\n"         # <F11>
+        "[23$":   "Ifinish\\n"       # Shift+<F11>
+        # Cross-terminal compatibility:
+        "[19;2~": "Itry-again\\n"    # <Shift-F8> (xterm/gnome-terminal)
+        "[23;2~": "Ifinish\\n"       # Shift+<F11> (xterm/gnome-terminal)
         "OA": previous-history
         "[A": previous-history
         "OB": next-history
         "[B": next-history
     $else
-        "\e[14~":   "ls -l\n"
-        "\e[15~":   "\C-lwhereami\n"
-        "\e[28~":   "edit -c\n"
-        "\e[17~":   "up\n"
-        "\e[18~":   "down\n"
-        "\e[19~":   "continue\n"
-        "\e[32~":   "try-again\n"
-        "\e[19;2~": "try-again\n"
-        "\e[21~":   "next\n"
-        "\e[23~":   "step\n"
-        "\e[23$":   "finish\n"
-        "\e[23;2~": "finish\n"
+        # Emacs Bindings:
+        "\\e[14~":   "ls -l\\n"
+        "\\e[15~":   "\\C-lwhereami\\n"
+        "\\e[28~":   "edit -c\\n"
+        "\\e[17~":   "up\\n"
+        "\\e[18~":   "down\\n"
+        "\\e[19~":   "continue\\n"
+        "\\e[32~":   "try-again\\n"
+        "\\e[19;2~": "try-again\\n"
+        "\\e[21~":   "next\\n"
+        "\\e[23~":   "step\\n"
+        "\\e[23$":   "finish\\n"
+        "\\e[23;2~": "finish\\n"
     $endif
 $endif
 
-\e[32mThe above is what makes the bindings work.\e[0m
+Just paste it into ~/.inputrc and restart pry. It should be fully functional;
+if it isn't, please file an issue: https://github.com/rking/pry-fkeys/issues
 
-Just paste it into ~/.inputrc and it should be fully functional.
-
-Or, if you just want to suppress the warning, you can put 'Ruby' anywhere in
+Or, if you just want to suppress the warning, you can put '$if Ruby' anywhere in
 ~/.inputrc and it'll stop bothering you.
 EOT
 end
