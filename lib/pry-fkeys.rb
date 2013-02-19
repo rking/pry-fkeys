@@ -2,13 +2,14 @@ require 'pry'
 
 module PryFkeys
   class << self
+    def inputrc_path; File.expand_path '~/.inputrc' end
+
     def on_clunky_readline?
       Readline::VERSION[/edit/i]
     end
 
-    def hotrodded_inputrc?
-      path = File.expand_path '~/.inputrc'
-      File.exists? path and File.read(path)[/\$if\s*Ruby/]
+    def inputrc_customized_for_ruby?
+      File.exists? inputrc_path and File.read(inputrc_path)[/\$if\s*Ruby/]
     end
 
     def install_comma_debugging_aliases
@@ -39,6 +40,34 @@ module PryFkeys
         Pry.output.puts "Added commands: #{abbreviations.join ' '}"
       end
     end
+
+    def explain
+      Pry.output.puts <<-EOT
+\e[32mThese are the current bindings:\e[0m
+
+#{THE_WHOLE_POINT}
+
+If you:
+- Paste that into ~/.inputrc (or run inputrc! from Pry)
+- Restart pry
+Then it should be fully functional; if it isn't, please file an issue:
+    https://github.com/rking/pry-fkeys/issues
+
+Or, if you just want to suppress the warning, you can put '$if Ruby' anywhere in
+~/.inputrc and it'll stop bothering you.
+      EOT
+      'Almost there...'
+    end
+
+    def append!
+      warning = "\e[31mFound '$if Ruby' block, but running anyway...\e[0m\n" \
+        if inputrc_customized_for_ruby?
+      Pry.output.puts "#{warning}Saving F-keys bindings to #{inputrc_path}"
+      File.open inputrc_path, 'a' do |f|
+        f.write THE_WHOLE_POINT
+      end
+      'Done - Restart pry to see the effects'
+    end
   end
 
   if on_clunky_readline?
@@ -62,18 +91,13 @@ For the full keyboard experience, install GNU Readline:
     install_comma_debugging_aliases
   end
 
-  unless hotrodded_inputrc?
+  unless inputrc_customized_for_ruby?
     warn <<-EOT
 Pry-de found no Ruby customization in ~/.inputrc. Run 'inputrc?' to learn more.
     EOT
   end
 
-end
-
-def inputrc?
-  Pry.output.puts <<-EOT
-\e[32mThese are the current bindings:\e[0m
-
+  THE_WHOLE_POINT = <<-EOT
 $if Ruby
     $if mode=vi
         set keymap vi-command
@@ -90,6 +114,7 @@ $if Ruby
         # Cross-terminal compatibility:
         "[19;2~": "Itry-again\\n"    # <Shift-F8> (xterm/gnome-terminal)
         "[23;2~": "Ifinish\\n"       # Shift+<F11> (xterm/gnome-terminal)
+        "OS": "Ils -l\\n"            # <F4>
         "OA": previous-history
         "[A": previous-history
         "OB": next-history
@@ -97,6 +122,7 @@ $if Ruby
     $else
         # Emacs Bindings:
         "\\e[14~":   "ls -l\\n"
+        "\\e[OS":    "ls -l\\n"
         "\\e[15~":   "\\C-lwhereami\\n"
         "\\e[28~":   "edit -c\\n"
         "\\e[17~":   "up\\n"
@@ -110,11 +136,13 @@ $if Ruby
         "\\e[23;2~": "finish\\n"
     $endif
 $endif
+  EOT
+end
 
-Just paste it into ~/.inputrc and restart pry. It should be fully functional;
-if it isn't, please file an issue: https://github.com/rking/pry-fkeys/issues
+def inputrc?
+  PryFkeys.explain
+end
 
-Or, if you just want to suppress the warning, you can put '$if Ruby' anywhere in
-~/.inputrc and it'll stop bothering you.
-EOT
+def inputrc!
+  PryFkeys.append!
 end
