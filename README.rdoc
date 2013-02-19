@@ -1,0 +1,24 @@
+= pry-fkeys
+
+Help the user get to a place where the speedy F8/F10/F11/etc keys work.
+
+At some point, it might be fully automated. For now, it just warns when:
+
+- The weaksauce 'EditLine' Readline is used instead of the GNU Readline one, 
+- The F-key bindings are not in ~/.inputrc
+
+== The Shortcuts
+
+[+F4+] ls -l (show all locally-defined variables and values)
+[+F5+] whereami (show the code context)
+[+F6+] up (a frame, depends on pry-stack_explorer, as does the next one)
+[+F7+] down
+[+F8+] continue (depends on pry-debugger, as do step/next/finish)
+[+Shift-F8+] try-again (restart from last 'raise', depends on pry-rescue)
+[+F10+] next (run the current statement)
+[+F11+] step (step into the next method call)
+[+Shift-F11+] finish (get back out of the last 'step')
+
+== Why It's Ugly
+
+Because it supports vi *and* emacs keys, in a few different terminal mappings.
