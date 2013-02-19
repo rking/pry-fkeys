@@ -1,40 +1,42 @@
 require 'pry'
 
 module PryFkeys
-  def on_clunky_readline?
-    Readline::VERSION[/edit/i]
-  end
+  class << self
+    def on_clunky_readline?
+      Readline::VERSION[/edit/i]
+    end
 
-  def hotrodded_inputrc?
-    (File.read File.expand_path '~/.inputrc')[/Ruby/]
-  end
+    def hotrodded_inputrc?
+      (File.read File.expand_path '~/.inputrc')[/Ruby/]
+    end
 
-  def install_comma_debugging_aliases
-    psuedo_alias ',s', 'step'
-    psuedo_alias ',n', 'next'
-    psuedo_alias ',c', 'continue'
-    psuedo_alias ',f', 'finish'
+    def install_comma_debugging_aliases
+      psuedo_alias ',s', 'step'
+      psuedo_alias ',n', 'next'
+      psuedo_alias ',c', 'continue'
+      psuedo_alias ',f', 'finish'
 
-    psuedo_alias ',w', 'whereami'
+      psuedo_alias ',w', 'whereami'
 
-    # ,, aliases all the ",cmd"s to "cmd". Undo with a second ",,"
-    command ',,',
-      'toggle ,-prefixes off/on commands, for terse input' do
-      abbreviations = []
-      commands.keys.reject do |cmd|
-        cmd.class != String or cmd[0] != ',' or cmd == ',,'
-      end.each do |e|
-        terse = e[1..-1]
-        # TODO: check to see if you're stomping on something, first.
-        Pry.commands.alias_command terse, e
-        abbreviations << terse
-      end
-      Pry.commands.command ',,', 'unsplat all ,-commands' do
-        abbreviations.each do |too_terse|
-          Pry.commands.delete too_terse
+      # ,, aliases all the ",cmd"s to "cmd". Undo with a second ",,"
+      command ',,',
+        'toggle ,-prefixes off/on commands, for terse input' do
+        abbreviations = []
+        commands.keys.reject do |cmd|
+          cmd.class != String or cmd[0] != ',' or cmd == ',,'
+        end.each do |e|
+          terse = e[1..-1]
+          # TODO: check to see if you're stomping on something, first.
+          Pry.commands.alias_command terse, e
+          abbreviations << terse
         end
+        Pry.commands.command ',,', 'unsplat all ,-commands' do
+          abbreviations.each do |too_terse|
+            Pry.commands.delete too_terse
+          end
+        end
+        Pry.output.puts "Added commands: #{abbreviations.join ' '}"
       end
-      Pry.output.puts "Added commands: #{abbreviations.join ' '}"
     end
   end
 

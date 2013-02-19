@@ -2,6 +2,7 @@
 require 'working/gemspec'
 $:.unshift 'lib'
 require 'pry-fkeys'
+require 'pry-fkeys/version'
 
 Working.gemspec(
   :name => 'pry-fkeys',
