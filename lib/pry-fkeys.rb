@@ -122,7 +122,7 @@ $if Ruby
     $else
         # Emacs Bindings:
         "\\e[14~":   "ls -l\\n"
-        "\\e[OS":    "ls -l\\n"
+        "\\eOS":     "ls -l\\n"
         "\\e[15~":   "\\C-lwhereami\\n"
         "\\e[28~":   "edit -c\\n"
         "\\e[17~":   "up\\n"
