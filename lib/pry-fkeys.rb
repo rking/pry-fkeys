@@ -72,7 +72,7 @@ Or, if you just want to suppress the warning, you can put '$if Ruby' anywhere in
 
   if on_clunky_readline?
     warn <<-EOT
-\e[31mPry-de found EditLine's Readline wrapper.\e[0m
+\e[31mpry-fkeys found EditLine's Readline wrapper.\e[0m
 For the full keyboard experience, install GNU Readline:
 
 # For RVM:
@@ -93,7 +93,7 @@ For the full keyboard experience, install GNU Readline:
 
   unless inputrc_customized_for_ruby?
     warn <<-EOT
-Pry-de found no Ruby customization in ~/.inputrc. Run 'inputrc?' to learn more.
+pry-fkeys found no Ruby customization in ~/.inputrc. Run 'inputrc?' to learn more.
     EOT
   end
 
