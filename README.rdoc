@@ -4,7 +4,7 @@ Help the user get to a place where the speedy F8/F10/F11/etc keys work.
 
 At some point, it might be fully automated. For now, it just warns when:
 
-- The weaksauce 'EditLine' Readline is used instead of the GNU Readline one, 
+- The weaksauce 'EditLine' Readline is used instead of the GNU Readline one,
 - The F-key bindings are not in ~/.inputrc
 
 == The Shortcuts
@@ -19,6 +19,11 @@ At some point, it might be fully automated. For now, it just warns when:
 [+F11+] step (step into the next method call)
 [+Shift-F11+] finish (get back out of the last 'step')
 
-== Why It's Ugly
+== Why It's Internals Are Ugly
 
 Because it supports vi *and* emacs keys, in a few different terminal mappings.
+
+== Actually
+
+It turns out you can configure EditLine. If anyone wants to tackle that, let me
+know and I'll definitely include your work.
